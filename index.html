@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Chatbot</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .chat-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background-color: #2980b9;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(41, 128, 185, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chat-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .chat-icon:hover {
+            transform: scale(1.1);
+            background-color: #2471a3;
+        }
+
+        #chat-wrapper {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chat-header {
+            background-color: #2980b9;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .close-chat:hover {
+            transform: scale(1.1);
+        }
+
+        #chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 16px;
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        .bot-message {
+            background: #2980b9;
+            color: white;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background: #e8f5fe;
+            color: #2c3e50;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .options-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            border: 2px solid #2980b9;
+            border-radius: 25px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            color: #2980b9;
+            width: 100%;
+        }
+
+        .option:hover {
+            background-color: #2980b9;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        #contact-form {
+            display: none;
+            padding: 20px;
+            background: white;
+        }
+
+        #contact-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #e8f5fe;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        #contact-form input:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        #contact-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #contact-form button:hover {
+            background-color: #2471a3;
+        }
+
+        #loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2980b9;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 15px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            margin: 0 4px;
+            background-color: #2980b9;
+            border-radius: 50%;
+            animation: typing 1.5s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .thank-you-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .checkmark-circle circle {
+            fill: #4CAF50;
+        }
+
+        .checkmark-circle path {
+            fill: none;
+            stroke: white;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: checkmark 0.5s ease-in-out forwards;
+        }
+
+        @keyframes checkmark {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .thank-you-message {
+            color: #2c3e50;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-icon" id="open-chat">
+        <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+            <path d="M500 0C223.9 0 0 223.9 0 500s223.9 500 500 500 500-223.9 500-500S776.1 0 500 0zm0 961.5C244.9 961.5 38.5 755.1 38.5 500S244.9 38.5 500 38.5 961.5 244.9 961.5 500 755.1 961.5 500 961.5z"/>
+            <path d="M500 192.3c-152.4 0-276.9 124.5-276.9 276.9 0 86.5 40.1 163.9 102.8 214.7v161.5l161.5-102.8c4.1 0.3 8.3 0.4 12.6 0.4 152.4 0 276.9-124.5 276.9-276.9S652.4 192.3 500 192.3zm0 515.4c-131.2 0-238.5-107.2-238.5-238.5S368.8 230.8 500 230.8s238.5 107.2 238.5 238.5-107.3 238.4-238.5 238.4z"/>
+        </svg>
+    </div>
+
+    <div id="chat-wrapper">
+        <div class="chat-header">
+            <h3>Supporto Clienti</h3>
+            <button class="close-chat" id="close-chat">&times;</button>
+        </div>
+        <div id="chat-container"></div>
+        <div id="contact-form">
+            <h3>Lascia i tuoi contatti:</h3>
+            <input type="text" id="name" placeholder="Nome" required>
+            <input type="text" id="phone" placeholder="Numero di telefono" required>
+            <button id="submit-contact">Invia</button>
+        </div>
+        <div id="loader"></div>
+    </div>
+
+    <script>
+        const chatIcon = document.getElementById('open-chat');
+        const chatWrapper = document.getElementById('chat-wrapper');
+        const closeChatBtn = document.getElementById('close-chat');
+        const chatContainer = document.getElementById('chat-container');
+        const contactForm = document.getElementById('contact-form');
+        const nameInput = document.getElementById('name');
+        const phoneInput = document.getElementById('phone');
+        const submitContact = document.getElementById('submit-contact');
+        const loader = document.getElementById('loader');
+        let currentQuestionId = null;
+
+        chatIcon.addEventListener('click', () => {
+            chatWrapper.style.display = 'flex';
+            chatIcon.style.display = 'none';
+            if (!document.querySelector('.thank-you-message')) {
+                resetChat();
+            }
+        });
+
+        closeChatBtn.addEventListener('click', () => {
+            chatWrapper.style.display = 'none';
+            chatIcon.style.display = 'flex';
+            resetChat();
+        });
+
+        function addMessage(text, sender = 'bot') {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${sender === 'bot' ? 'bot-message' : 'user-message'}`;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.innerHTML = '<span></span><span></span><span></span>';
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return typingDiv;
+        }
+
+        function removeTypingIndicator(indicator) {
+            if (indicator) {
+                chatContainer.removeChild(indicator);
+            }
+        }
+
+        function addOptions(options) {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-container';
+            
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.className = 'option';
+                button.onclick = () => handleOptionClick(option.id, option.text, optionsDiv);
+                optionsDiv.appendChild(button);
+            });
+            
+            chatContainer.appendChild(optionsDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function handleOptionClick(optionId, optionText, optionsContainer) {
+            // Disabilita tutti i pulsanti nel container delle opzioni
+            const buttons = optionsContainer.querySelectorAll('.option');
+            buttons.forEach(button => {
+                button.classList.add('disabled');
+            });
+
+            addMessage(optionText, 'user');
+            loader.style.display = 'block';
+
+            fetch('http://localhost:3000/next', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question_id: currentQuestionId, option_id: optionId })
+            })
+            .then(response => response.json())
+            .then(async data => {
+                loader.style.display = 'none';
+
+                if (data.action === "show_form") {
+                    await showContactForm();
+                } else {
+                    const typingIndicator = showTypingIndicator();
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    removeTypingIndicator(typingIndicator);
+
+                    currentQuestionId = data.id;
+                    addMessage(data.question);
+                    addOptions(data.options);
+                }
+            })
+            .catch(error => {
+                loader.style.display = 'none';
+                addMessage('Errore nel comunicare con il server.', 'bot');
+                console.error(error);
+            });
+        }
+
+        async function showContactForm() {
+            const typingIndicator = showTypingIndicator();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            removeTypingIndicator(typingIndicator);
+
+            contactForm.style.display = 'block';
+            addMessage("Per favore, compila il modulo per continuare.");
+        }
+
+        function resetChat() {
+            // Check if thank you message exists
+            const thankYouMessage = document.querySelector('.thank-you-container');
+            if (!thankYouMessage) {
+                chatContainer.innerHTML = '';
+                contactForm.style.display = 'none';
+                nameInput.value = '';
+                phoneInput.value = '';
+                startChat();
+            }
+        }
+
+        async function startChat() {
+            loader.style.display = 'block';
+            try {
+                const response = await fetch('http://localhost:3000/start');
+                const data = await response.json();
+                loader.style.display = 'none';
+
+                currentQuestionId = data.id;
+
+                const typingIndicator = showTypingIndicator();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                removeTypingIndicator(typingIndicator);
+
+                addMessage(data.question);
+                addOptions(data.options);
+            } catch (error) {
+                loader.style.display = 'none';
+                addMessage('Errore nel caricamento della chat.', 'bot');
+                console.error(error);
+            }
+        }
+
+        submitContact.addEventListener('click', async () => {
+            const name = nameInput.value;
+            const phone = phoneInput.value;
+
+            if (!name || !phone) {
+                alert('Inserisci tutti i dati richiesti.');
+                return;}
+
+try {
+    const response = await fetch('http://localhost:3000/save-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone })
+    });
+    const data = await response.json();
+
+    // Clear chat container and show thank you message
+    chatContainer.innerHTML = `
+        <div class="thank-you-container">
+            <svg class="checkmark-circle" viewBox="0 0 52 52">
+                <circle cx="26" cy="26" r="25" />
+                <path d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            <div class="thank-you-message">
+                Grazie. Ti contatteremo al più presto.
+            </div>
+        </div>
+    `;
+    
+    contactForm.style.display = 'none';
+} catch (error) {
+    addMessage("Errore nell'invio dei dati.", 'bot');
+    console.error(error);
+}
+});
+
+startChat();
+</script>
+</body>
+</html>
