@@ -1,3 +1,5 @@
+Complete Chatbot with Thank You Screen
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -278,6 +280,48 @@
             font-size: 18px;
             line-height: 1.5;
         }
+
+        /* Nuovi stili per la landing page */
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            height: 100%;
+            background-color: white;
+        }
+
+        .landing-title {
+            color: #2c3e50;
+            font-size: 20px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .landing-subtitle {
+            color: #2c3e50;
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .start-button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            background-color: #2471a3;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -369,7 +413,6 @@
         }
 
         function handleOptionClick(optionId, optionText, optionsContainer) {
-            // Disabilita tutti i pulsanti nel container delle opzioni
             const buttons = optionsContainer.querySelectorAll('.option');
             buttons.forEach(button => {
                 button.classList.add('disabled');
@@ -416,15 +459,24 @@
         }
 
         function resetChat() {
-            // Check if thank you message exists
             const thankYouMessage = document.querySelector('.thank-you-container');
             if (!thankYouMessage) {
-                chatContainer.innerHTML = '';
+                chatContainer.innerHTML = `
+                    <div class="landing-container">
+                        <div class="landing-title">Ciao! Benvenuto nel chatbot di test di Nethex.</div>
+                        <div class="landing-subtitle">Sei pronto per iniziare?</div>
+                        <button class="start-button" onclick="startConversation()">Inizia</button>
+                    </div>
+                `;
                 contactForm.style.display = 'none';
                 nameInput.value = '';
                 phoneInput.value = '';
-                startChat();
             }
+        }
+
+        function startConversation() {
+            chatContainer.innerHTML = '';
+            startChat();
         }
 
         async function startChat() {
@@ -455,37 +507,39 @@
 
             if (!name || !phone) {
                 alert('Inserisci tutti i dati richiesti.');
-                return;}
+                return;
+            }
 
-try {
-    const response = await fetch('https://chatbot-backend-36sk.onrender.com/save-contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, phone })
-    });
-    const data = await response.json();
+            try {
+                const response = await fetch('https://chatbot-backend-36sk.onrender.com/save-contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone })
+                });
+                const data = await response.json();
 
-    // Clear chat container and show thank you message
-    chatContainer.innerHTML = `
-        <div class="thank-you-container">
-            <svg class="checkmark-circle" viewBox="0 0 52 52">
-                <circle cx="26" cy="26" r="25" />
-                <path d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-            </svg>
-            <div class="thank-you-message">
-                Grazie. Ti contatteremo al più presto.
-            </div>
-        </div>
-    `;
-    
-    contactForm.style.display = 'none';
-} catch (error) {
-    addMessage("Errore nell'invio dei dati.", 'bot');
-    console.error(error);
-}
-});
+                // Clear chat container and show thank you message
+                chatContainer.innerHTML = `
+                    <div class="thank-you-container">
+                        <svg class="checkmark-circle" viewBox="0 0 52 52">
+                            <circle cx="26" cy="26" r="25" />
+                            <path d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                        </svg>
+                        <div class="thank-you-message">
+                            Grazie. Ti contatteremo al più presto.
+                        </div>
+                    </div>
+                `;
+                
+                contactForm.style.display = 'none';
+            } catch (error) {
+                addMessage("Errore nell'invio dei dati.", 'bot');
+                console.error(error);
+            }
+        });
 
-startChat();
-</script>
+        // Inizializza con la landing page invece di startChat()
+        resetChat();
+    </script>
 </body>
 </html>
