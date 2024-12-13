@@ -378,7 +378,7 @@
             addMessage(optionText, 'user');
             loader.style.display = 'block';
 
-            fetch('http://localhost:3000/next', {
+            fetch('https://chatbot-backend-36sk.onrender.com/next', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ question_id: currentQuestionId, option_id: optionId })
@@ -430,7 +430,7 @@
         async function startChat() {
             loader.style.display = 'block';
             try {
-                const response = await fetch('http://localhost:3000/start');
+                const response = await fetch('https://chatbot-backend-36sk.onrender.com/start');
                 const data = await response.json();
                 loader.style.display = 'none';
 
@@ -458,7 +458,7 @@
                 return;}
 
 try {
-    const response = await fetch('http://localhost:3000/save-contact', {
+    const response = await fetch('https://chatbot-backend-36sk.onrender.com/save-contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, phone })
