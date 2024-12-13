@@ -21,7 +21,7 @@
 
     [data-theme="dark"] {
         --primary: #3498db;
-        --background: hsl(300, 64%, 40%);
+        --background: #1a202c;
         --surface: #2d3748;
         --text: #f7fafc;
         --text-secondary: #a0aec0;
@@ -299,7 +299,39 @@
         margin: 20px auto;
     }
 
-    .landing-container {
+    .landing-title, .landing-subtitle {
+    color: var(--text);  /* Usa la variabile del testo */
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.landing-title {
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.landing-subtitle {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.start-button {
+    padding: 12px 30px;
+    font-size: 16px;
+    background-color: var(--primary);
+    color: var(--background);  /* Usa il colore di sfondo per il testo del bottone */
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.start-button:hover {
+    background-color: var(--hover);
+    transform: translateY(-2px);
+}
+
+.landing-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -308,48 +340,6 @@
     text-align: center;
     height: 100%;
     background-color: var(--background);
-    animation: fadeIn 0.5s ease forwards;
-}
-
-    .landing-title {
-    color: var(--text);
-    font-size: 20px;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    animation: slideUp 0.5s ease forwards;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-    .landing-subtitle {
-    color: var(--text);
-    font-size: 18px;
-    line-height: 1.5;
-    margin-bottom: 30px;
-    animation: slideUp 0.5s ease forwards 0.2s;
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-    .start-button {
-    padding: 12px 30px;
-    font-size: 16px;
-    background-color: var(--primary);
-    color: var(--background);
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    animation: slideUp 0.5s ease forwards 0.4s;
-    opacity: 0;
-    transform: translateY(20px);
-    box-shadow: 0 4px 8px rgba(41, 128, 185, 0.2);
-}
-
-    .start-button:hover {
-    background-color: var(--hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(41, 128, 185, 0.3);
 }
 
     .typing-indicator {
