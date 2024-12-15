@@ -565,6 +565,37 @@
         border-radius: 0;
     }
 }
+
+.checkmark-circle {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    animation: scaleIn 0.5s ease forwards;
+}
+
+.checkmark-circle circle {
+    fill: #4CAF50;
+}
+
+.checkmark-circle path {
+    fill: none;
+    stroke: white;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: checkmark 0.5s ease-in-out forwards 0.5s;
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
+
+@keyframes checkmark {
+    to { stroke-dashoffset: 0; }
+}
 </style>
 
     </style>
