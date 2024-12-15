@@ -444,20 +444,26 @@
 
 /* Mobile Large (iPhone Plus/Galaxy) */
 @media screen and (max-width: 576px) {
+    @media screen and (max-width: 576px) {
     #chat-wrapper {
-        width: 100%;
-        height: 100vh;
-        bottom: 0;
-        right: 0;
-        border-radius: 0;
+        width: 92%;           /* invece di 100% */
+        height: 90vh;         /* invece di 100vh */
+        bottom: 5vh;         /* per centrare verticalmente */
+        right: 4%;           /* spazio destro */
+        left: 4%;            /* spazio sinistro */
+        margin: 0 auto;      /* per centrare orizzontalmente */
+        border-radius: 15px;  /* manteniamo i bordi arrotondati */
+        position: fixed;    
     }
 
+    /* Aggiustiamo anche l'icona per non sovrapporsi */
     .chat-icon {
         width: 50px;
         height: 50px;
-        bottom: 20px;
+        bottom: 2vh;        /* spostiamo un po' più su */
         right: 20px;
     }
+}
 
     .chat-icon svg {
         width: 25px;
