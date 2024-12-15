@@ -430,7 +430,7 @@
             <h3>Supporto Clienti</h3>
             <div class="header-controls">
                 <button id="theme-toggle" class="theme-toggle">
-                    <svg class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+                    <svg class="sun-icon" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                     <svg class="moon-icon" viewBox="0 0 24 24">
@@ -451,22 +451,27 @@
     </div>
 
     <script>
-        const chatIcon = document.getElementById('open-chat');
-        const chatWrapper = document.getElementById('chat-wrapper');
-        const closeChatBtn = document.getElementById('close-chat');
-        const chatContainer = document.getElementById('chat-container');
-        const contactForm = document.getElementById('contact-form');
-        const nameInput = document.getElementById('name');
-        const phoneInput = document.getElementById('phone');
-        const submitContact = document.getElementById('submit-contact');
-        const loader = document.getElementById('loader');
-        let currentQuestionId = null;
+    const chatIcon = document.getElementById('open-chat');
+    const chatWrapper = document.getElementById('chat-wrapper');
+    const closeChatBtn = document.getElementById('close-chat');
+    const chatContainer = document.getElementById('chat-container');
+    const contactForm = document.getElementById('contact-form');
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const submitContact = document.getElementById('submit-contact');
+    const loader = document.getElementById('loader');
+    let currentQuestionId = null;
 
         const botAvatar = `
     <svg viewBox="0 0 24 24">
         <path fill="currentColor" d="M12 2c.5 0 .9.3 1 .8l1 4c.1.4-.1.8-.4 1-.4.2-.8.1-1.1-.2l-.5-.6-.5.6c-.3.3-.7.4-1.1.2-.3-.2-.5-.6-.4-1l1-4c.1-.5.5-.8 1-.8zm0 7c4.4 0 8 3.6 8 8v3c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1v-3c0-4.4 3.6-8 8-8zm0 2c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6zm-3 6c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm6 0c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1z"/>
     </svg>
 `;
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const sunIcon = themeToggle.querySelector('.sun-icon');
+    const moonIcon = themeToggle.querySelector('.moon-icon');
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)');
 
 function setTheme(e) {
     if (e.matches) {
@@ -495,6 +500,7 @@ themeToggle.addEventListener('click', () => {
         moonIcon.style.display = 'none';
     }
 });
+
 
         chatIcon.addEventListener('click', () => {
             chatWrapper.style.display = 'flex';
@@ -627,31 +633,6 @@ themeToggle.addEventListener('click', () => {
             addMessage("Per favore, compila il modulo per continuare.");
         }
 
-// Gestione tema
-const themeToggle = document.getElementById('theme-toggle');
-const sunIcon = themeToggle.querySelector('.sun-icon');
-const moonIcon = themeToggle.querySelector('.moon-icon');
-
-// Controlla il tema preferito dell'utente
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-if (prefersDark) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    sunIcon.style.display = 'block';
-    moonIcon.style.display = 'none';
-}
-
-themeToggle.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    if (currentTheme === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
-        sunIcon.style.display = 'none';
-        moonIcon.style.display = 'block';
-    } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        sunIcon.style.display = 'block';
-        moonIcon.style.display = 'none';
-    }
-});
 
         function resetChat() {
             const thankYouMessage = document.querySelector('.thank-you-container');
